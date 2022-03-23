@@ -1,70 +1,67 @@
 import xmlrpc.client
-import dask.dataframe as dd
+import pandas as dd
 from xmlrpc.server import SimpleXMLRPCServer
 
-serverWorker = SimpleXMLRPCServer(
-    ('localhost', 1000),
-    logRequests=True,
-    allow_none=True,
-)
-serverClient = xmlrpc.client.ServerProxy('http://localhost:9000')
-df = dd.DataFrame
+
+class Worker:
+
+    def __init__(self, port):
+        self.server_worker = SimpleXMLRPCServer(
+            ('localhost', port),
+            logRequests=True,
+            allow_none=True
+        )
+        server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
+        server_master.register_worker(port)
+        self.df = dd.DataFrame
+        self.run_server()
+
+    def apply(self, **params):
+        self.df.apply(params)
+
+    def columns(self):
+        return self.df.columns
+
+    def groupby(self, by, **params):
+        return self.df.groupby(by, params)
+
+    # Return a first element.
+    def head(self):
+        return self.df.head()
+
+    # Pa comprobar si las celdas contienen el "value"
+    def isin(self, values):
+        return self.df.isin(values)
+
+    # Iterate function.
+    def items(self):
+        self.df.items()
+
+    # Return the maximum of the values
+    def max(self):
+        return self.df.max()
+
+    # Return the minimum of the values
+    def min(self):
+        return self.df.min()
+
+    def run_server(self):
+        self.server_worker.register_function(self.read_csv, "read_csv")
+        self.server_worker.register_function(self.apply, "apply")
+        self.server_worker.register_function(self.columns, "columns")
+        self.server_worker.register_function(self.head, "head")
+        self.server_worker.register_function(self.isin, "isin")
+        self.server_worker.register_function(self.max, "max")
+        self.server_worker.register_function(self.min, "min")
+
+        # To run the server
+        try:
+            print('Use Ctrl+C to exit')
+            self.server_worker.serve_forever()
+        except KeyboardInterrupt:
+            print("Exit...")
 
 
-def read_csv(filepath, **params):
-    df.read_csv(filepath, params)
-
-
-def apply(**params):
-    df.apply(params)
-
-
-def columns():
-    return df.g
-
-
-def groupby(by, **params):
-    return df.groupby(by, params)
-
-
-# Return a first element.
-def head():
-    return df.head()
-
-
-# Pa comprobar si las celdas contienen el "value"
-def isin(values):
-    return df.isin(values)
-
-
-# Iterate function.
-def items():
-    df.items()
-
-
-# Return the maximum of the values
-def max():
-    return df.max()
-
-
-# Return the minimum of the values
-def min():
-    return df.min()
-
-
-serverWorker.register_function(read_csv, "read_csv")
-serverWorker.register_function(apply, "apply")
-serverWorker.register_function(columns, "columns")
-serverWorker.register_function(head, "read_csv")
-serverWorker.register_function(isin, "isin")
-serverWorker.register_function(max, "max")
-serverWorker.register_function(min, "min")
-
-#Para runear el server
-try:
-    print('Usar Control-C pa salir')
-    serverWorker.serve_forever()
-except KeyboardInterrupt:
-    print("Exit...")
-
-
+def read_csv(filepath):
+    print(filepath)
+    df = dd.read_csv(filepath)
