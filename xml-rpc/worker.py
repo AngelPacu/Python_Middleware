@@ -1,9 +1,11 @@
+import sys
 import xmlrpc.client
 import pandas as dd
 from xmlrpc.server import SimpleXMLRPCServer
 
 
 class Worker:
+    df = dd.DataFrame
 
     def __init__(self, port):
         self.server_worker = SimpleXMLRPCServer(
@@ -13,8 +15,12 @@ class Worker:
         )
         server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
         server_master.register_worker(port)
-        self.df = dd.DataFrame
         self.run_server()
+
+    def read_csv(self, filepath):
+        print(filepath)
+        Worker.df = dd.read_csv(filepath)
+        return True
 
     def apply(self, **params):
         self.df.apply(params)
@@ -56,12 +62,10 @@ class Worker:
 
         # To run the server
         try:
-            print('Use Ctrl+C to exit')
+            print('Worker with port '+(sys.argv[1])+' ready for battle...')
             self.server_worker.serve_forever()
         except KeyboardInterrupt:
             print("Exit...")
 
 
-def read_csv(filepath):
-    print(filepath)
-    df = dd.read_csv(filepath)
+Worker(int(sys.argv[1]))

@@ -1,5 +1,4 @@
 from xmlrpc.server import SimpleXMLRPCServer
-from worker import Worker
 
 ## read_csv, apply, columns, groupby, head, isin, items, (GRPC -> max, min).
 
