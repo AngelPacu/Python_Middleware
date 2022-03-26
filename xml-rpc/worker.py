@@ -19,7 +19,6 @@ class Worker:
 
     def read_csv(self, filepath):
         self.df = dd.read_csv(filepath)
-        print(self.df)
 
     def apply(self, **params):
         self.df.apply(params)
@@ -30,13 +29,14 @@ class Worker:
     def groupby(self, by, **params):
         return self.df.groupby(by, params)
 
-    # Return a first element.
-    def head(self):
-        return self.df.head
+    # Return a N elements (DEFAULT N=5)
+    def head(self, num=5):
+        return str(self.df.head(num))
+
 
     # Pa comprobar si las celdas contienen el "value"
     def isin(self, values):
-        return self.df.isin(values)
+        return str(self.df.isin(values))
 
     # Iterate function.
     def items(self):
