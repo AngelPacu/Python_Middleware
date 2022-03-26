@@ -5,7 +5,6 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 
 class Worker:
-    df = dd.DataFrame
 
     def __init__(self, port):
         self.server_worker = SimpleXMLRPCServer(
@@ -15,18 +14,18 @@ class Worker:
         )
         server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
         server_master.register_worker(port)
+        self.df = dd.DataFrame
         self.run_server()
 
     def read_csv(self, filepath):
-        print(filepath)
-        Worker.df = dd.read_csv(filepath)
-        return True
+        self.df = dd.read_csv(filepath)
+        print(self.df)
 
     def apply(self, **params):
         self.df.apply(params)
 
     def columns(self):
-        return self.df.columns
+        return str(self.df.columns)
 
     def groupby(self, by, **params):
         return self.df.groupby(by, params)
@@ -45,11 +44,11 @@ class Worker:
 
     # Return the maximum of the values
     def max(self):
-        return self.df.max()
+        return str(self.df.max())
 
     # Return the minimum of the values
     def min(self):
-        return self.df.min()
+        return str(self.df.min())
 
     def run_server(self):
         self.server_worker.register_function(self.read_csv, "read_csv")
