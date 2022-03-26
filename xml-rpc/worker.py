@@ -32,7 +32,7 @@ class Worker:
 
     # Return a first element.
     def head(self):
-        return self.df.head()
+        return self.df.head
 
     # Pa comprobar si las celdas contienen el "value"
     def isin(self, values):
@@ -44,11 +44,11 @@ class Worker:
 
     # Return the maximum of the values
     def max(self):
-        return str(self.df.max())
+        return str(self.df.max)
 
     # Return the minimum of the values
     def min(self):
-        return str(self.df.min())
+        return str(self.df.min)
 
     def run_server(self):
         self.server_worker.register_function(self.read_csv, "read_csv")

@@ -21,7 +21,7 @@ def list_workers():
 
 def assign_worker():
     worker_port = worker_list[0] if worker_list else None
-    worker_list.pop(0)
+    # worker_list.pop(0)
     return worker_port
 
 
