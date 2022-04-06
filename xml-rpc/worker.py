@@ -48,7 +48,7 @@ class Worker:
 
     # Return the minimum of the values
     def min(self):
-        return str(self.df.min)
+        return str(self.df.min())
 
     def run_server(self):
         self.server_worker.register_function(self.read_csv, "read_csv")
@@ -65,6 +65,3 @@ class Worker:
             self.server_worker.serve_forever()
         except KeyboardInterrupt:
             print("Exit...")
-
-
-Worker(int(sys.argv[1]))
