@@ -2,7 +2,6 @@ import time
 import worker, master
 
 import threading
-import logging
 
 if __name__ == "__main__":
     master = threading.Thread(target=master.run_master)
