@@ -1,18 +1,19 @@
-from worker import Worker
+import time
+import worker, master
+
 import threading
 import logging
 
-
-def thread_function(name):
-    logging.info("Thread %s: starting", name)
-    logging.info("Thread %s: finishing", name)
-
-
 if __name__ == "__main__":
-    # main = threading.Thread(target = )
+    master = threading.Thread(target=master.run_master)
+    master.start()
+    time.sleep(2.0)
+    worker1 = threading.Thread(target=worker.run_worker, args=(1000,))
+    worker1.start()
+    worker2 = threading.Thread(target=worker.run_worker, args=(2000,))
+    worker2.start()
+    # worker3 = threading.Thread(target=Worker, args=(3000,))
+    # worker3.start()
 
-    #worker1 = threading.Thread(target=Worker.__init__, args=(1000,))
-    #worker2 = threading.Thread(target=Worker, args=(2000,))
-    #worker3 = threading.Thread(target=Worker, args=(3000,))
-    worker1 = Worker(1000)
+    # worker = Worker(1000)
 

@@ -1,67 +1,72 @@
-import sys
 import xmlrpc.client
 import pandas as dd
 from xmlrpc.server import SimpleXMLRPCServer
 
 
-class Worker:
+def run_worker(port):
+    print(port)
+    server_worker = SimpleXMLRPCServer(
+        ('localhost', port),
+        logRequests=True,
+    )
 
-    def __init__(self, port):
-        self.server_worker = SimpleXMLRPCServer(
-            ('localhost', port),
-            logRequests=True,
-            allow_none=True
-        )
-        server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
-        server_master.register_worker(port)
-        self.df = dd.DataFrame
-        self.run_server()
+    server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
+    server_master.register_worker(str(port))
+    openDF = dict()
 
-    def read_csv(self, filepath):
-        self.df = dd.read_csv(filepath)
+    def read_csv(filepath):
+        openDF[filepath] = dd.read_csv(filepath)
+        return "CSV read"
 
-    def apply(self, **params):
-        self.df.apply(params)
+    def apply(filepath, function):
+        openDF.get(filepath).apply(func=function)
+        return "Function Applied"
 
-    def columns(self):
-        return str(self.df.columns)
+    def columns(filepath):
+        return str(openDF.get(filepath).columns)
 
-    def groupby(self, by, **params):
-        return self.df.groupby(by, params)
+    def groupby(filepath, by):
+        return openDF.get(filepath).keys()
 
-    # Return a N elements (DEFAULT N=5)
-    def head(self, num=5):
-        return str(self.df.head(num))
+        # Return a N elements (DEFAULT N=5)
 
+    def head(filepath, num=5):
+        return str(openDF.get(filepath).head(num))
 
-    # Pa comprobar si las celdas contienen el "value"
-    def isin(self, values):
-        return str(self.df.isin(values))
+        # Test if cells contain values
 
-    # Iterate function.
-    def items(self):
-        self.df.items()
+    def isin(filepath, values):
+        return str(openDF.get(filepath).isin(values))
 
-    # Return the maximum of the values
-    def max(self):
-        return str(self.df.max)
+        # Iterate function.
 
-    # Return the minimum of the values
-    def min(self):
-        return str(self.df.min())
+    def items(filepath):
+        items = openDF.get(filepath).items()
+        print(items)
+        return xd
+        # Return the maximum of the values
 
-    def run_server(self):
-        self.server_worker.register_function(self.read_csv, "read_csv")
-        self.server_worker.register_function(self.apply, "apply")
-        self.server_worker.register_function(self.columns, "columns")
-        self.server_worker.register_function(self.head, "head")
-        self.server_worker.register_function(self.isin, "isin")
-        self.server_worker.register_function(self.max, "max")
-        self.server_worker.register_function(self.min, "min")
+    def maximum(filepath):
+        return str(openDF.get(filepath).max())
 
-        # To run the server
-        try:
-            print('Worker with port '+(sys.argv[1])+' ready for battle...')
-            self.server_worker.serve_forever()
-        except KeyboardInterrupt:
-            print("Exit...")
+        # Return the minimum of the values
+
+    def minimum(filepath):
+        return str(openDF.get(filepath).min())
+
+    server_worker.register_function(read_csv, "read_csv")
+    server_worker.register_function(apply, "apply")
+    server_worker.register_function(columns, "columns")
+    server_worker.register_function(groupby, "groupby")
+    server_worker.register_function(head, "head")
+    server_worker.register_function(isin, "isin")
+    server_worker.register_function(items, "items")
+    server_worker.register_function(maximum, "maximum")
+    server_worker.register_function(minimum, "minimum")
+
+    # To run the server
+    try:
+        print('Worker with port ' + str(port) + ' ready for battle...')
+        server_worker.serve_forever()
+    except KeyboardInterrupt:
+        print("Exit...")
