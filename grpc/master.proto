@@ -1,0 +1,17 @@
+syntax = "proto3";
+message list {}
+
+message Worker {
+    uint64 port = 1;
+}
+
+message WorkerList {
+    repeated uint64 workerList = 1;
+}
+
+
+service MasterService {
+    rpc register_worker(Worker) returns (list) {}
+    rpc list_workers(list) returns (WorkerList) {}
+    rpc assign_worker(list) returns (Worker) {}
+}

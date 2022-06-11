@@ -22,17 +22,17 @@ def run_server(port):
         print(openDF[filepath])
         return "CSV read"
 
-    #numpy.sum can be replaced.
+    # numpy.sum can be replaced.
     def apply(filepath):
         return str(openDF.get(filepath).apply(numpy.sum))
 
     def columns(filepath):
         return str(openDF.get(filepath).columns)
 
-    # Averages with matching numbers, if there are 2 matching values, it will average the entire row. EX: LATD. MEAN can replaced.
+    # Averages with matching numbers, if there are 2 matching values, it will average the entire row. EX: LATD. MEAN
+    # can replaced.
     def groupby(filepath, by):
         return str(openDF.get(filepath).groupby(openDF[filepath][by]).mean())
-
 
     # Return a N elements (DEFAULT N=5)
     def head(filepath, num=5):
@@ -47,9 +47,9 @@ def run_server(port):
 
     def items(filepath):
         df_str = ''
-        for label,value in openDF[filepath].items():
-            df_str += (f'label: {label}\n')
-            df_str += (f'content:\n {value}\n')
+        for label, value in openDF[filepath].items():
+            df_str += f'label: {label}\n'
+            df_str += f'content:\n {value}\n'
 
         return str(df_str)
         # Return the maximum of the values
@@ -78,5 +78,6 @@ def run_server(port):
         server_worker.serve_forever()
     except KeyboardInterrupt:
         print("Exit...")
+
 
 run_server(int(sys.argv[1]))

@@ -1,0 +1,23 @@
+syntax = "proto3";
+message emptyList {}
+
+
+message Filepath {
+    string filepath = 1;
+    optional int64 num = 2;
+    optional string by = 3;
+    optional bytes values = 4;
+
+}
+
+message Result {
+    string result = 1;
+}
+
+service WorkerService {
+    rpc read_csv (Filepath) returns (Result) {}
+    rpc maximum (Filepath) returns (Result) {}
+    rpc minimum (Filepath) returns (Result) {}
+
+
+}
