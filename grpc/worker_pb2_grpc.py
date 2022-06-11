@@ -19,36 +19,6 @@ class WorkerServiceStub(object):
                 request_serializer=worker__pb2.Filepath.SerializeToString,
                 response_deserializer=worker__pb2.Result.FromString,
                 )
-        self.apply = channel.unary_unary(
-                '/WorkerService/apply',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
-        self.columns = channel.unary_unary(
-                '/WorkerService/columns',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
-        self.groupby = channel.unary_unary(
-                '/WorkerService/groupby',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
-        self.head = channel.unary_unary(
-                '/WorkerService/head',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
-        self.isin = channel.unary_unary(
-                '/WorkerService/isin',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
-        self.items = channel.unary_unary(
-                '/WorkerService/items',
-                request_serializer=worker__pb2.Filepath.SerializeToString,
-                response_deserializer=worker__pb2.Result.FromString,
-                )
         self.maximum = channel.unary_unary(
                 '/WorkerService/maximum',
                 request_serializer=worker__pb2.Filepath.SerializeToString,
@@ -65,42 +35,6 @@ class WorkerServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def read_csv(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def apply(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def columns(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def groupby(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def head(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def isin(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def items(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -123,36 +57,6 @@ def add_WorkerServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'read_csv': grpc.unary_unary_rpc_method_handler(
                     servicer.read_csv,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'apply': grpc.unary_unary_rpc_method_handler(
-                    servicer.apply,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'columns': grpc.unary_unary_rpc_method_handler(
-                    servicer.columns,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'groupby': grpc.unary_unary_rpc_method_handler(
-                    servicer.groupby,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'head': grpc.unary_unary_rpc_method_handler(
-                    servicer.head,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'isin': grpc.unary_unary_rpc_method_handler(
-                    servicer.isin,
-                    request_deserializer=worker__pb2.Filepath.FromString,
-                    response_serializer=worker__pb2.Result.SerializeToString,
-            ),
-            'items': grpc.unary_unary_rpc_method_handler(
-                    servicer.items,
                     request_deserializer=worker__pb2.Filepath.FromString,
                     response_serializer=worker__pb2.Result.SerializeToString,
             ),
@@ -188,108 +92,6 @@ class WorkerService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/WorkerService/read_csv',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def apply(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/apply',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def columns(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/columns',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def groupby(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/groupby',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def head(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/head',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def isin(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/isin',
-            worker__pb2.Filepath.SerializeToString,
-            worker__pb2.Result.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def items(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/WorkerService/items',
             worker__pb2.Filepath.SerializeToString,
             worker__pb2.Result.FromString,
             options, channel_credentials,

@@ -15,9 +15,14 @@ print(worker_test)
 worker_server = worker_pb2_grpc.WorkerServiceStub(grpc.insecure_channel(('localhost:'+str(worker_test))))
 
 
+## TEST FUNCTIONS ##
 mydf = "../dataFiles/cities.csv"
 print(worker_server.read_csv(worker_pb2.Filepath(filepath=mydf)))
+max1 = str(worker_server.maximum(worker_pb2.Filepath(filepath=mydf, num=1))).replace('\\n', '\n')
+min1 = str(worker_server.minimum(worker_pb2.Filepath(filepath=mydf, num=1))).replace('\\n', '\n')
 
+print(max1)
+print(min1)
 
 
 

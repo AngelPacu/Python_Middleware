@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\"\x0b\n\temptyList\"n\n\x08\x46ilepath\x12\x10\n\x08\x66ilepath\x18\x01 \x01(\t\x12\x10\n\x03num\x18\x02 \x01(\x03H\x00\x88\x01\x01\x12\x0f\n\x02\x62y\x18\x03 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06values\x18\x04 \x01(\x0cH\x02\x88\x01\x01\x42\x06\n\x04_numB\x05\n\x03_byB\t\n\x07_values\"\x18\n\x06Result\x12\x0e\n\x06result\x18\x01 \x01(\t2\xaf\x02\n\rWorkerService\x12 \n\x08read_csv\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1d\n\x05\x61pply\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07\x63olumns\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07groupby\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1c\n\x04head\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1c\n\x04isin\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1d\n\x05items\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07maximum\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07minimum\x12\t.Filepath\x1a\x07.Result\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cworker.proto\"\x0b\n\temptyList\"6\n\x08\x46ilepath\x12\x10\n\x08\x66ilepath\x18\x01 \x01(\t\x12\x10\n\x03num\x18\x02 \x01(\x03H\x00\x88\x01\x01\x42\x06\n\x04_num\"\x18\n\x06Result\x12\x0e\n\x06result\x18\x01 \x01(\t2s\n\rWorkerService\x12 \n\x08read_csv\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07maximum\x12\t.Filepath\x1a\x07.Result\"\x00\x12\x1f\n\x07minimum\x12\t.Filepath\x1a\x07.Result\"\x00\x62\x06proto3')
 
 
 
@@ -49,9 +49,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _EMPTYLIST._serialized_start=16
   _EMPTYLIST._serialized_end=27
   _FILEPATH._serialized_start=29
-  _FILEPATH._serialized_end=139
-  _RESULT._serialized_start=141
-  _RESULT._serialized_end=165
-  _WORKERSERVICE._serialized_start=168
-  _WORKERSERVICE._serialized_end=471
+  _FILEPATH._serialized_end=83
+  _RESULT._serialized_start=85
+  _RESULT._serialized_end=109
+  _WORKERSERVICE._serialized_start=111
+  _WORKERSERVICE._serialized_end=226
 # @@protoc_insertion_point(module_scope)

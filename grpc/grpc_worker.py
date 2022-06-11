@@ -19,10 +19,14 @@ def run_server(port):
             return response
 
         def maximum(self, request, context):
-            return worker.maximum(request.filepath)
+            response = worker_pb2.Result()
+            response.result = worker.maximum(request.filepath, request.num)
+            return response
 
         def minimum(self, request, context):
-            return worker.minimum(request.filepath)
+            response = worker_pb2.Result()
+            response.result = worker.minimum(request.filepath, request.num)
+            return response
 
 
 

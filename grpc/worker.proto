@@ -5,9 +5,6 @@ message emptyList {}
 message Filepath {
     string filepath = 1;
     optional int64 num = 2;
-    optional string by = 3;
-    optional bytes values = 4;
-
 }
 
 message Result {
