@@ -1,14 +1,15 @@
 import pika
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
 channel.queue_declare(queue='petitions', durable=True)
+
 channel.queue_declare(queue='client', durable=True)
 
 
-def send_petition(df, method, argument):
-    message = df+','+method+','+argument
+def send_petition(df, method, argument=''):
+    message = df + ',' + method + ',' + argument
     channel.basic_publish(
         exchange='',
         routing_key='petitions',
@@ -25,10 +26,10 @@ def print_result(ch, method, properties, body):
 
 channel.basic_consume(queue='client', on_message_callback=print_result, auto_ack=True)
 
-channel.start_consuming()
+send_petition("../dataFiles/cities.csv", "read_csv")
+send_petition("../dataFiles/cities.csv", "apply", "numpy.sum")
+send_petition("../dataFiles/cities.csv", "read_csv")
+send_petition("../dataFiles/cities.csv", "read_csv")
+send_petition("../dataFiles/cities.csv", "read_csv")
 
-send_petition("../dataFiles/cities.csv", "read_csv", "null")
-#send_petition("../dataFiles/cities.csv", "apply")
-#send_petition("../dataFiles/cities.csv", "read_csv")
-#send_petition("../dataFiles/cities.csv", "read_csv")
-#send_petition("../dataFiles/cities.csv", "read_csv")
+channel.start_consuming()

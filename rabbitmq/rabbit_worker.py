@@ -1,4 +1,4 @@
-import pika
+import pika, sys, os
 import pandas as dd
 import numpy
 
@@ -9,9 +9,8 @@ channel.queue_declare(queue='petitions', durable=True)
 openDF = dict[str, dd.DataFrame]()
 
 
-def read_csv(filepath, null):
+def read_csv(filepath):
     openDF[filepath] = dd.read_csv(filepath)
-    print(openDF[filepath])
     return "CSV read"
 
 
@@ -20,7 +19,7 @@ def apply(filepath, function):
     return str(openDF.get(filepath).apply(function))
 
 
-def columns(filepath, null):
+def columns(filepath):
     return str(openDF.get(filepath).columns)
 
 
@@ -43,7 +42,7 @@ def isin(filepath, values):
     # Iterate function.
 
 
-def items(filepath, null):
+def items(filepath):
     df_str = ''
     for label, value in openDF[filepath].items():
         df_str += f'label: {label}\n'
@@ -53,29 +52,50 @@ def items(filepath, null):
     # Return the maximum of the values
 
 
-def maximum(filepath, null):
+def maximum(filepath):
     return str(openDF.get(filepath).max())
 
     # Return the minimum of the values
 
 
-def minimum(filepath, null):
+def minimum(filepath):
     return str(openDF.get(filepath).min(axis=1))
 
 
-def attend_petition(ch, method, properties, body):
+switch_functions = {
+    'read_csv': read_csv,
+    'apply': apply,
+    'columns': columns,
+    'groupby': groupby,
+    'head': head,
+    'isin': isin,
+    'items': items,
+    'maximum': maximum,
+    'minimum': minimum
+}
+
+
+def attend_petition(body):
     petition = body.decode().split(",")
-    result=petition[0](petition[1], petition[2])
-    channel.queue_declare(queue=properties.reply_to)
+    print("I got " + petition[1])
+    return eval(petition[1])(petition[0]) if petition[2] == '' else eval(petition[1])(petition[0], petition[2])
+
+
+def send_petition(result, reply):
     channel.basic_publish(
         exchange='',
-        routing_key=properties.reply_to,
+        routing_key=reply,
         body=result.encode(),
         properties=pika.BasicProperties(
             delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE,
         ))
 
 
-channel.basic_consume(queue='petitions', on_message_callback=attend_petition, auto_ack=True)
+def callback(ch, method, properties, body):
+    result = attend_petition(body)
+    send_petition(result, properties.reply_to)
+
+
+channel.basic_consume(queue='petitions', on_message_callback=callback, auto_ack=True)
 
 channel.start_consuming()
