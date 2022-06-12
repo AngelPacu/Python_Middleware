@@ -1,3 +1,6 @@
+import ast
+from _ctypes_test import func
+
 import pika, sys, os
 import pandas as dd
 import numpy
@@ -16,7 +19,7 @@ def read_csv(filepath):
 
 # numpy.sum can be replaced.
 def apply(filepath, function):
-    return str(openDF.get(filepath).apply(function))
+    return str(openDF.get(filepath).apply(eval(function)))
 
 
 def columns(filepath):
@@ -37,7 +40,7 @@ def head(filepath, num=5):
 
 
 def isin(filepath, values):
-    return str(openDF.get(filepath).isin(values))
+    return str(openDF.get(filepath).isin(values.split(",")))
 
     # Iterate function.
 
@@ -53,13 +56,13 @@ def items(filepath):
 
 
 def maximum(filepath):
-    return str(openDF.get(filepath).max())
+    return str(openDF.get(filepath).max(numeric_only='True'))
 
     # Return the minimum of the values
 
 
 def minimum(filepath):
-    return str(openDF.get(filepath).min(axis=1))
+    return str(openDF.get(filepath).min(numeric_only='True'))
 
 
 switch_functions = {

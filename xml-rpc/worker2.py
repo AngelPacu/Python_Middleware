@@ -55,12 +55,12 @@ def run_server(port):
         # Return the maximum of the values
 
     def maximum(filepath):
-        return str(openDF.get(filepath).max())
+        return str(openDF.get(filepath).max(numeric_only='True'))
 
         # Return the minimum of the values
 
     def minimum(filepath):
-        return str(openDF.get(filepath).min(axis=1))
+        return str(openDF.get(filepath).min(numeric_only='True'))
 
     server_worker.register_function(read_csv, "read_csv")
     server_worker.register_function(apply, "apply")

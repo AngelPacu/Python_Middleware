@@ -28,8 +28,12 @@ channel.basic_consume(queue='client', on_message_callback=print_result, auto_ack
 
 send_petition("../dataFiles/cities.csv", "read_csv")
 send_petition("../dataFiles/cities.csv", "apply", "numpy.sum")
-send_petition("../dataFiles/cities.csv", "read_csv")
-send_petition("../dataFiles/cities.csv", "read_csv")
-send_petition("../dataFiles/cities.csv", "read_csv")
+send_petition("../dataFiles/cities.csv", "columns")
+send_petition("../dataFiles/cities.csv", "groupby", "LatD")
+send_petition("../dataFiles/cities.csv", "head")
+send_petition("../dataFiles/cities.csv", "isin", "[1,50]")
+send_petition("../dataFiles/cities.csv", "items")
+send_petition("../dataFiles/cities.csv", "maximum")
+send_petition("../dataFiles/cities.csv", "minimum")
 
 channel.start_consuming()
