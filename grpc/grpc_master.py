@@ -40,5 +40,7 @@ server.start()
 try:
     while True:
         time.sleep(86400)
+        print('Use ctrl+C to exit')
 except KeyboardInterrupt:
+    print("Exit...")
     server.stop(0)
