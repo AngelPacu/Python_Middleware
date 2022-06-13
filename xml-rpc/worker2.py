@@ -32,7 +32,7 @@ def run_server(port):
     # Averages with matching numbers, if there are 2 matching values, it will average the entire row. EX: LATD. MEAN
     # can replaced.
     def groupby(filepath, by):
-        return str(openDF.get(filepath).groupby(openDF[filepath][by]).mean())
+        return str(openDF.get(filepath).groupby(openDF.get(filepath)[by]).mean())
 
     # Return a N elements (DEFAULT N=5)
     def head(filepath, num=5):

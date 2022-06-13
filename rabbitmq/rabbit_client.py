@@ -25,8 +25,6 @@ def print_result(ch, method, properties, body):
 
 
 channel.basic_consume(queue='client', on_message_callback=print_result, auto_ack=True)
-
-send_petition("../dataFiles/cities.csv", "read_csv")
 send_petition("../dataFiles/cities.csv", "apply", "numpy.sum")
 send_petition("../dataFiles/cities.csv", "columns")
 send_petition("../dataFiles/cities.csv", "groupby", "LatD")

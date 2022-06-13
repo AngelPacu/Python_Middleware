@@ -9,45 +9,39 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost')
 channel = connection.channel()
 channel.queue_declare(queue='petitions', durable=True)
 
-openDF = dict[str, dd.DataFrame]()
-
-
-def read_csv(filepath):
-    openDF[filepath] = dd.read_csv(filepath)
-    return "CSV read"
 
 
 # numpy.sum can be replaced.
 def apply(filepath, function):
-    return str(openDF.get(filepath).apply(eval(function)))
+    return str(dd.read_csv(filepath).apply(eval(function)))
 
 
 def columns(filepath):
-    return str(openDF.get(filepath).columns)
+    return str(dd.read_csv(filepath).columns)
 
 
 # Averages with matching numbers, if there are 2 matching values, it will average the entire row. EX: LATD. MEAN
 # can replaced.
 def groupby(filepath, by):
-    return str(openDF.get(filepath).groupby(openDF[filepath][by]).mean())
+    return str(dd.read_csv(filepath).groupby(dd.read_csv(filepath)[by]).mean())
 
 
 # Return a N elements (DEFAULT N=5)
 def head(filepath, num=5):
-    return str(openDF.get(filepath).head(num))
+    return str(dd.read_csv(filepath).head(num))
 
     # Test if cells contain values
 
 
 def isin(filepath, values):
-    return str(openDF.get(filepath).isin(values.split(",")))
+    return str(dd.read_csv(filepath).isin(values.split(",")))
 
     # Iterate function.
 
 
 def items(filepath):
     df_str = ''
-    for label, value in openDF[filepath].items():
+    for label, value in dd.read_csv(filepath).items():
         df_str += f'label: {label}\n'
         df_str += f'content:\n {value}\n'
 
@@ -56,26 +50,13 @@ def items(filepath):
 
 
 def maximum(filepath):
-    return str(openDF.get(filepath).max(numeric_only='True'))
+    return str(dd.read_csv(filepath).max(numeric_only='True'))
 
     # Return the minimum of the values
 
 
 def minimum(filepath):
-    return str(openDF.get(filepath).min(numeric_only='True'))
-
-
-switch_functions = {
-    'read_csv': read_csv,
-    'apply': apply,
-    'columns': columns,
-    'groupby': groupby,
-    'head': head,
-    'isin': isin,
-    'items': items,
-    'maximum': maximum,
-    'minimum': minimum
-}
+    return str(dd.read_csv(filepath).min(numeric_only='True'))
 
 
 def attend_petition(body):
