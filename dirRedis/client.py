@@ -13,29 +13,27 @@ def register_workers():
     return w_list
 
 def assign_worker():
-    worker_port = worker_list[0] if worker_list else None
+    worker_name = worker_list[0] if worker_list else None
     print(worker_list)
+    print(worker_name)
     # worker_list.pop(0)
-    return worker_port
+    port = server_master.get(worker_name).decode("utf-8")
+    ruta = "http://localhost:" + port
+    worker = xmlrpc.client.ServerProxy(ruta)
+    return worker
 
 
 worker_list = register_workers()
+worker_server = assign_worker()
 
-worker = assign_worker()
 
-port = server_master.get("port").decode("utf-8")
-ruta = "http://localhost:"+port
-worker_server = xmlrpc.client.ServerProxy(ruta)
-
+### TEST FUNCTIONS ###
 worker_server.read_csv(mydf)
 print(worker_server.minimum(mydf))
 print(worker_server.maximum(mydf))
-
 result_read = timeit.timeit(stmt='worker_server.read_csv(mydf)', globals=globals(), number=1)
 result_min = timeit.timeit(stmt='worker_server.minimum(mydf)', globals=globals(), number=1)
 result_max = timeit.timeit(stmt='worker_server.maximum(mydf)', globals=globals(), number=1)
-
-
 print(result_read)
 print(result_max)
 print(result_min)

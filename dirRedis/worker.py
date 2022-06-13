@@ -13,11 +13,11 @@ def run_server(port):
         allow_none=True,
         logRequests=True,
     )
-
+    #Server Conexion
     server_master = redis.from_url('redis://localhost:6379', db=0)
     worker_name = "localhost"+str(port)
     server_master.rpush("workers", worker_name)
-    server_master.set("port",port)
+    server_master.set(worker_name, port)
     openDF = dict()
 
     def read_csv(filepath):

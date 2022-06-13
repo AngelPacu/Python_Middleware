@@ -1,6 +1,4 @@
 syntax = "proto3";
-message emptyList {}
-
 
 message Filepath {
     string filepath = 1;
