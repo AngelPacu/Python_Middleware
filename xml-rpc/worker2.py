@@ -2,10 +2,12 @@ import sys
 import xmlrpc.client
 import pandas as dd
 from xmlrpc.server import SimpleXMLRPCServer
+import master
 
 import numpy
 
 worker_list = list()
+
 
 def run_server(port):
     server_worker = SimpleXMLRPCServer(
@@ -15,12 +17,15 @@ def run_server(port):
     )
 
     server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
-    server_master.register_worker(str(port))
+    try:
+        server_master.register_worker(str(port))
+    except ConnectionError:
+        master_thread = master
+
     openDF = dict()
 
     def read_csv(filepath):
         openDF[filepath] = dd.read_csv(filepath)
-        print(openDF[filepath])
         return "CSV read"
 
     # numpy.sum can be replaced.

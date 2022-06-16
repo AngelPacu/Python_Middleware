@@ -3,11 +3,12 @@ import timeit
 from multiprocessing import Pool
 from time import sleep
 
-import worker2
 
 mydf = "../dataFiles/cities.csv"
 
 worker_server = xmlrpc.client.ServerProxy('http://localhost:9000')
+
+print(worker_server.list_workers)
 
 while worker_server.assign_worker() != "Worker assigned":
     sleep(2)

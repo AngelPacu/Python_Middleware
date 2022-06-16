@@ -1,6 +1,8 @@
 import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from pandas import dd
+import worker2
+
 ## read_csv, apply, columns, groupby, head, isin, items, (GRPC -> max, min).
 
 
@@ -14,86 +16,157 @@ worker_list = list()
 
 
 def register_worker(port):
-    worker_list.append(xmlrpc.client.ServerProxy('http://localhost:'+port))
+    worker_list.append(port)
     for worker in worker_list:
         worker.worker_list = worker_list
+
 
 def list_workers():
     return worker_list if worker_list else None
 
 
 def assign_worker():
-    worker_port = worker_list[0] if worker_list else None
-    # worker_list.pop(0)
-    return "Worker assigned"
+    return "Worker assigned"if worker_list else "No workers available"
 
 
 def read_csv(filepath):
-
+    compare = dd.read_csv(filepath)
     for worker in worker_list:
-        df = worker.openDF[filepath] = dd.read_csv(filepath)
-
-
-    return "CSV read"
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.read_csv(filepath)
+            print("Read_csv worker "+worker+": "+result)
+        elif result != w_proxy.read_csv(filepath):
+            result = "Consistency error between nodes"
+            print("Read_csv worker " + worker + ": " + result)
+            break
+    return result
 
 
 # numpy.sum can be replaced.
 def apply(filepath):
-    return str(openDF.get(filepath).apply(numpy.sum))
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.apply(filepath)
+            print("Apply worker "+worker+": "+result)
+        elif result != w_proxy.apply(filepath):
+            result = "Consistency error between nodes"
+            print("Apply worker " + worker + ": " + result)
+    return result
 
 
 def columns(filepath):
-    return str(openDF.get(filepath).columns)
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.columns(filepath)
+            print("Columns worker "+worker+": "+result)
+        elif result != w_proxy.columns(filepath):
+            result = "Consistency error between nodes"
+            print("Columns worker " + worker + ": " + result)
+    return result
 
 
 # Averages with matching numbers, if there are 2 matching values, it will average the entire row. EX: LATD. MEAN
 # can replaced.
 def groupby(filepath, by):
-    return str(openDF.get(filepath).groupby(openDF.get(filepath)[by]).mean())
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.groupby(filepath)
+            print("Groupby worker "+worker+": "+result)
+        elif result != w_proxy.groupby(filepath):
+            result = "Consistency error between nodes"
+            print("Groupby worker " + worker + ": " + result)
+    return result
 
 
 # Return a N elements (DEFAULT N=5)
 def head(filepath, num=5):
-    return str(openDF.get(filepath).head(num))
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.head(filepath)
+            print("Head worker "+worker+": "+result)
+        elif result != w_proxy.head(filepath):
+            result = "Consistency error between nodes"
+            print("Head worker " + worker + ": " + result)
+    return result
 
     # Test if cells contain values
 
 
 def isin(filepath, values):
-    return str(openDF.get(filepath).isin(values))
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.isin(filepath)
+            print("Isin worker "+worker+": "+result)
+        elif result != w_proxy.isin(filepath):
+            result = "Consistency error between nodes"
+            print("Isin worker " + worker + ": " + result)
+    return result
 
     # Iterate function.
 
 
 def items(filepath):
-    df_str = ''
-    for label, value in openDF[filepath].items():
-        df_str += f'label: {label}\n'
-        df_str += f'content:\n {value}\n'
-
-    return str(df_str)
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.items(filepath)
+            print("Items worker "+worker+": "+result)
+        elif result != w_proxy.items(filepath):
+            result = "Consistency error between nodes"
+            print("items worker " + worker + ": " + result)
+    return result
     # Return the maximum of the values
 
 
 def maximum(filepath):
-    return str(openDF.get(filepath).max(numeric_only='True'))
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.maximum(filepath)
+            print("Maximum worker "+worker+": "+result)
+        elif result != w_proxy.maximum(filepath):
+            result = "Consistency error between nodes"
+            print("Maximum worker " + worker + ": " + result)
+    return result
 
 
 # Return the minimum of the values
 
 def minimum(filepath):
-    return str(openDF.get(filepath).min(numeric_only='True'))
+    result = None
+    for worker in worker_list:
+        w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
+        if result is None:
+            result = w_proxy.minimum(filepath)
+            print("Minimum worker "+worker+": "+result)
+        elif result != w_proxy.minimum(filepath):
+            result = "Consistency error between nodes"
+            print("Minimum worker " + worker + ": " + result)
+    return result
 
 
-server_worker.register_function(read_csv, "read_csv")
-server_worker.register_function(apply, "apply")
-server_worker.register_function(columns, "columns")
-server_worker.register_function(groupby, "groupby")
-server_worker.register_function(head, "head")
-server_worker.register_function(isin, "isin")
-server_worker.register_function(items, "items")
-server_worker.register_function(maximum, "maximum")
-server_worker.register_function(minimum, "minimum")
+server.register_function(read_csv, "read_csv")
+server.register_function(apply, "apply")
+server.register_function(columns, "columns")
+server.register_function(groupby, "groupby")
+server.register_function(head, "head")
+server.register_function(isin, "isin")
+server.register_function(items, "items")
+server.register_function(maximum, "maximum")
+server.register_function(minimum, "minimum")
 
 server.register_function(register_worker, "register_worker")
 server.register_function(list_workers, "list_workers")
