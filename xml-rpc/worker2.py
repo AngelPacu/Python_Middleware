@@ -5,6 +5,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 import numpy
 
+worker_list = list()
 
 def run_server(port):
     server_worker = SimpleXMLRPCServer(

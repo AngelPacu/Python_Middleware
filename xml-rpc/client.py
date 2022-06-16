@@ -1,16 +1,16 @@
 import xmlrpc.client
 import timeit
 from multiprocessing import Pool
+from time import sleep
 
+import worker2
 
 mydf = "../dataFiles/cities.csv"
-master_server = xmlrpc.client.ServerProxy('http://localhost:9000')
-print(master_server.list_workers())
-ruta = "http://localhost:" + str(master_server.assign_worker())
-worker_server = xmlrpc.client.ServerProxy(ruta)
 
+worker_server = xmlrpc.client.ServerProxy('http://localhost:9000')
 
-
+while worker_server.assign_worker() != "Worker assigned":
+    sleep(2)
 
 result_read = timeit.timeit(stmt='worker_server.read_csv(mydf)', globals=globals(), number=1)
 result_max = timeit.timeit(stmt='worker_server.minimum(mydf)', globals=globals(), number=1)
