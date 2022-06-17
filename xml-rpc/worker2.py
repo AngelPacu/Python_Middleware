@@ -10,14 +10,8 @@ import numpy
 worker_list = list()
 server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
 
+
 def run_server(port):
-    server_worker = SimpleXMLRPCServer(
-        ('localhost', port),
-        allow_none=True,
-        logRequests=True,
-    )
-
-
     try:
         server_master.register_worker(str(port))
 
@@ -26,6 +20,13 @@ def run_server(port):
         run_master = threading.Thread(target=master_test, daemon=True)
         run_master.start()
         print("El master será este")
+        server_master.register_worker(str(port))
+
+    server_worker = SimpleXMLRPCServer(
+        ('localhost', port),
+        allow_none=True,
+        logRequests=True,
+    )
 
     openDF = dict()
 
@@ -73,10 +74,8 @@ def run_server(port):
     def minimum(filepath):
         return str(openDF.get(filepath).min(numeric_only='True'))
 
-    def check_master():
-        server = xmlrpc.client.ServerProxy('http://localhost:9000')
-        if server.check():
-            return True
+    def check():
+        return True
 
     server_worker.register_function(read_csv, "read_csv")
     server_worker.register_function(apply, "apply")
@@ -87,20 +86,17 @@ def run_server(port):
     server_worker.register_function(items, "items")
     server_worker.register_function(maximum, "maximum")
     server_worker.register_function(minimum, "minimum")
+    server_worker.register_function(check, "check")
 
     # To run the server
     try:
         print('Worker with port ' + str(port) + ' ready for battle...')
         run_worker = threading.Thread(target=server_worker.serve_forever, daemon=True)
         run_worker.start()
+        sleep(2)
         while True:
-            checking_master = threading.Thread(target=check_master, daemon=True)
-            if checking_master.start:
-                print("Master alive")
-
-            worker_list = server_master.list_workers()
-            print(worker_list)
-            sleep(1)
+            print(server_master.list_workers())
+            sleep(3)
     except KeyboardInterrupt:
         server_master.remove_worker(port)
         print("Exit...")

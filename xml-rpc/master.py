@@ -1,9 +1,8 @@
 import xmlrpc.client
+from time import sleep
 from xmlrpc.server import SimpleXMLRPCServer
 import threading
-
-## read_csv, apply, columns, groupby, head, isin, items, (GRPC -> max, min).
-
+import socket
 
 worker_list = list()
 
@@ -17,8 +16,6 @@ def run_server():
 
     def register_worker(port):
         worker_list.append(port)
-        #for worker in worker_list:
-        #    worker.worker_list = worker_list
 
     def list_workers():
         return worker_list if worker_list else None
@@ -31,6 +28,7 @@ def run_server():
 
     def read_csv(filepath):
         # compare = dd.read_csv(filepath)
+        result = None
         for worker in worker_list:
             w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
             if result is None:
@@ -74,9 +72,9 @@ def run_server():
         for worker in worker_list:
             w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
             if result is None:
-                result = w_proxy.groupby(filepath)
+                result = w_proxy.groupby(filepath, by)
                 print("Groupby worker " + worker + ": " + result)
-            elif result != w_proxy.groupby(filepath):
+            elif result != w_proxy.groupby(filepath, by):
                 result = "Consistency error between nodes"
                 print("Groupby worker " + worker + ": " + result)
         return result
@@ -87,9 +85,9 @@ def run_server():
         for worker in worker_list:
             w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
             if result is None:
-                result = w_proxy.head(filepath)
+                result = w_proxy.head(filepath, num)
                 print("Head worker " + worker + ": " + result)
-            elif result != w_proxy.head(filepath):
+            elif result != w_proxy.head(filepath, num):
                 result = "Consistency error between nodes"
                 print("Head worker " + worker + ": " + result)
         return result
@@ -101,9 +99,9 @@ def run_server():
         for worker in worker_list:
             w_proxy = xmlrpc.client.ServerProxy('http://localhost:' + worker)
             if result is None:
-                result = w_proxy.isin(filepath)
+                result = w_proxy.isin(filepath, values)
                 print("Isin worker " + worker + ": " + result)
-            elif result != w_proxy.isin(filepath):
+            elif result != w_proxy.isin(filepath, values):
                 result = "Consistency error between nodes"
                 print("Isin worker " + worker + ": " + result)
         return result
@@ -169,7 +167,18 @@ def run_server():
 
     # To run the server
     try:
-        print('Use ctrl+C to exit')
-        server.serve_forever()
+        socket.setdefaulttimeout(60)
+        run_master = threading.Thread(target=server.serve_forever, daemon=True)
+        run_master.start()
+        while True:
+            for w in worker_list:
+                w_pxy = xmlrpc.client.ServerProxy('http://localhost:' + w)
+                try:
+                    w_pxy.check()
+                    print("Port " + w + " alive")
+                except (ConnectionError, TimeoutError) as e:
+                    remove_worker(w)
+            print(worker_list)
+            sleep(2)
     except KeyboardInterrupt:
-        print("Exit...")
+        print("Master killed...")
