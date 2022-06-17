@@ -8,7 +8,7 @@ from time import sleep
 import numpy
 
 worker_list = list()
-
+server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
 
 def run_server(port):
     server_worker = SimpleXMLRPCServer(
@@ -17,7 +17,7 @@ def run_server(port):
         logRequests=True,
     )
 
-    server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
+
     try:
         server_master.register_worker(str(port))
 
@@ -28,7 +28,6 @@ def run_server(port):
         print("El master será este")
 
     openDF = dict()
-
 
     def read_csv(filepath):
         openDF[filepath] = dd.read_csv(filepath)
@@ -79,8 +78,6 @@ def run_server(port):
         if server.check():
             return True
 
-
-
     server_worker.register_function(read_csv, "read_csv")
     server_worker.register_function(apply, "apply")
     server_worker.register_function(columns, "columns")
@@ -100,8 +97,6 @@ def run_server(port):
             checking_master = threading.Thread(target=check_master, daemon=True)
             if checking_master.start:
                 print("Master alive")
-            else:
-                run_server(port)
 
             worker_list = server_master.list_workers()
             print(worker_list)
@@ -109,6 +104,9 @@ def run_server(port):
     except KeyboardInterrupt:
         server_master.remove_worker(port)
         print("Exit...")
+
+    except ConnectionRefusedError:
+        run_server(port)
 
 
 run_server(int(sys.argv[1]))
