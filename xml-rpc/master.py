@@ -26,6 +26,9 @@ def run_server():
     def assign_worker():
         return "Worker assigned" if worker_list else "No workers available"
 
+    def remove_worker(port):
+        return worker_list.remove(str(port))
+
     def read_csv(filepath):
         # compare = dd.read_csv(filepath)
         for worker in worker_list:
@@ -162,6 +165,7 @@ def run_server():
     server.register_function(register_worker, "register_worker")
     server.register_function(list_workers, "list_workers")
     server.register_function(assign_worker, "assign_worker")
+    server.register_function(remove_worker, "remove_worker")
 
     # To run the server
     try:

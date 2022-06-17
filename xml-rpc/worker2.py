@@ -9,6 +9,7 @@ import numpy
 
 worker_list = list()
 
+
 def run_server(port):
     server_worker = SimpleXMLRPCServer(
         ('localhost', port),
@@ -21,7 +22,6 @@ def run_server(port):
         server_master.register_worker(str(port))
 
     except ConnectionError:
-
         master_test = master.run_server
         run_master = threading.Thread(target=master_test, daemon=True)
         run_master.start()
@@ -76,8 +76,8 @@ def run_server(port):
 
     def check_master():
         server = xmlrpc.client.ServerProxy('http://localhost:9000')
-        while server.check():
-            print("Master alive")
+        if server.check():
+            return True
 
 
 
@@ -98,11 +98,16 @@ def run_server(port):
         run_worker.start()
         while True:
             checking_master = threading.Thread(target=check_master, daemon=True)
-            checking_master.start()
+            if checking_master.start:
+                print("Master alive")
+            else:
+                run_server(port)
+
             worker_list = server_master.list_workers()
             print(worker_list)
-            sleep(2)
+            sleep(1)
     except KeyboardInterrupt:
+        server_master.remove_worker(port)
         print("Exit...")
 
 
