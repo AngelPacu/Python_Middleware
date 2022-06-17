@@ -8,7 +8,8 @@ mydf = "../dataFiles/cities.csv"
 
 worker_server = xmlrpc.client.ServerProxy('http://localhost:9000')
 
-print(worker_server.list_workers)
+list = worker_server.list_workers()
+print(list)
 
 while worker_server.assign_worker() != "Worker assigned":
     sleep(2)

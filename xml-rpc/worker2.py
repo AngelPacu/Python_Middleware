@@ -3,11 +3,11 @@ import xmlrpc.client
 import pandas as dd
 from xmlrpc.server import SimpleXMLRPCServer
 import master
-
+import threading
+from time import sleep
 import numpy
 
 worker_list = list()
-
 
 def run_server(port):
     server_worker = SimpleXMLRPCServer(
@@ -19,10 +19,16 @@ def run_server(port):
     server_master = xmlrpc.client.ServerProxy('http://localhost:9000')
     try:
         server_master.register_worker(str(port))
+
     except ConnectionError:
-        master_thread = master
+
+        master_test = master.run_server
+        run_master = threading.Thread(target=master_test, daemon=True)
+        run_master.start()
+        print("El master será este")
 
     openDF = dict()
+
 
     def read_csv(filepath):
         openDF[filepath] = dd.read_csv(filepath)
@@ -68,6 +74,13 @@ def run_server(port):
     def minimum(filepath):
         return str(openDF.get(filepath).min(numeric_only='True'))
 
+    def check_master():
+        server = xmlrpc.client.ServerProxy('http://localhost:9000')
+        while server.check():
+            print("Master alive")
+
+
+
     server_worker.register_function(read_csv, "read_csv")
     server_worker.register_function(apply, "apply")
     server_worker.register_function(columns, "columns")
@@ -81,7 +94,14 @@ def run_server(port):
     # To run the server
     try:
         print('Worker with port ' + str(port) + ' ready for battle...')
-        server_worker.serve_forever()
+        run_worker = threading.Thread(target=server_worker.serve_forever, daemon=True)
+        run_worker.start()
+        while True:
+            checking_master = threading.Thread(target=check_master, daemon=True)
+            checking_master.start()
+            worker_list = server_master.list_workers()
+            print(worker_list)
+            sleep(2)
     except KeyboardInterrupt:
         print("Exit...")
 
