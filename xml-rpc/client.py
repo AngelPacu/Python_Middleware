@@ -1,14 +1,10 @@
 import xmlrpc.client
-import timeit
-from multiprocessing import Pool
 from time import sleep
 
 mydf = "../dataFiles/cities.csv"
 
 worker_server = xmlrpc.client.ServerProxy('http://localhost:9000')
-
-list = worker_server.list_workers()
-print(list)
+print(worker_server.list_workers())
 
 while worker_server.assign_worker() != "Worker assigned":
     print("No workers avaiilable")
@@ -17,6 +13,8 @@ while worker_server.assign_worker() != "Worker assigned":
 ### TEST FUNCTIONS OK  // TODAS OK
 while True:
     try:
+        print("\nWorkers:" + worker_server.list_workers())
+        sleep(2)
         print("\nRead:" + worker_server.read_csv(mydf))
         sleep(2)
         print("\nMin:" + worker_server.minimum(mydf))

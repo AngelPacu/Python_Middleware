@@ -176,7 +176,7 @@ def run_server():
                 try:
                     w_pxy.check()
                     print("Port " + w + " alive")
-                except (ConnectionError, TimeoutError) as e:
+                except (ConnectionError, TimeoutError):
                     remove_worker(w)
             print(worker_list)
             sleep(2)
